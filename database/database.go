@@ -26,6 +26,7 @@ func InitDatabase() {
 	fmt.Println("Success open database.")
 	db.AutoMigrate(
 		&models.Category{},
+		&models.Post{},
 		&models.User{},
 	)
 	fmt.Println("Success database migration.")

@@ -33,17 +33,6 @@ func InitRoutes(app *fiber.App) {
 	// Login
 	admin.Post("/login", controllers.Login)
 	admin.Post("/auth", controllers.Auth)
-	// admin.Use(basicauth.New(basicauth.Config{
-	// 	Realm: "Forbidden",
-	// 	Authorizer: func(user, pass string) bool {
-	// 		return middlewares.CheckLogin(user, pass)
-	// 	},
-	// 	Unauthorized: func(c *fiber.Ctx) error {
-	// 		return c.SendStatus(fiber.StatusUnauthorized)
-	// 	},
-	// 	ContextUsername: "_user",
-	// 	ContextPassword: "_pass",
-	// }))
 	admin.Use(jwtware.New(jwtware.Config{
 		SigningKey: []byte(os.Getenv("SECRET")),
 		SuccessHandler: func(c *fiber.Ctx) error {
@@ -64,6 +53,10 @@ func InitRoutes(app *fiber.App) {
 	admin.Post("/categories", admin_mod.AdminCategoryCreate)
 	admin.Put("/categories/:id", admin_mod.AdminCategoryUpdate)
 	admin.Delete("/categories/:id", admin_mod.AdminCategoryDelete)
+
+	// Post
+	admin.Get("/posts", admin_mod.AdminPostIndex)
+	admin.Post("/posts", admin_mod.AdminPostCreate)
 
 	// User
 	admin.Post("/users", controllers.CreateUser)
