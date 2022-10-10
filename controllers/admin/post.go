@@ -38,6 +38,19 @@ func ValidatePost(post models.Post) []*ErrorPost {
 
 func AdminPostIndex(c *fiber.Ctx) error {
 	posts := []models.Post{}
+	database.Database.Db.Joins("Category").Find(&posts)
+
+	// if result.Error != nil {
+	// 	return c.Status(fiber.StatusBadRequest).JSON(result.Error)
+	// }
+
+	// fmt.
+
+	return c.JSON(&posts)
+}
+
+func AdminPostIndexOld(c *fiber.Ctx) error {
+	posts := []models.Post{}
 	var count int64
 
 	sql := "SELECT * from posts WHERE deleted_at is NULL"
@@ -77,28 +90,36 @@ func AdminPostCreate(c *fiber.Ctx) error {
 	}
 
 	data := models.Post{
-		Title:         post.Title,
-		CategoryRefer: post.CategoryRefer,
-		Body:          post.Body,
-		Description:   post.Description,
-		ShortDesc:     post.ShortDesc,
-		Keyword:       post.Keyword,
-		Slug:          post.Slug,
-		Image:         post.Image,
-		ImageNote:     post.ImageNote,
-		Publish:       post.Publish,
+		Title:       post.Title,
+		CategoryID:  post.CategoryID,
+		Body:        post.Body,
+		Description: post.Description,
+		ShortDesc:   post.ShortDesc,
+		Keyword:     post.Keyword,
+		Slug:        post.Slug,
+		Image:       post.Image,
+		ImageNote:   post.ImageNote,
+		Publish:     post.Publish,
 	}
 
-	errors := ValidatePost(data)
-	if errors != nil {
-		return c.Status(400).JSON(errors)
+	result := database.Database.Db.Joins("Category").Create(&data)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(result.Error)
 	}
+	database.Database.Db.Joins("Category").First(&post, data.ID)
+	return c.Status(fiber.StatusOK).JSON(&post)
+}
 
-	database.Database.Db.Create(&data)
-
-	if data.ID == 0 {
-		return c.Status(fiber.StatusBadRequest).JSON("error")
+func AdminPostShow(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Please select Id"})
 	}
-
-	return c.Status(fiber.StatusOK).JSON(&data)
+	var post models.Post
+	database.Database.Db.First(&post, id)
+	if post.ID == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Not found"})
+	}
+	return c.JSON(post)
 }

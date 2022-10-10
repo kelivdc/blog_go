@@ -22,11 +22,11 @@ func InitRoutes(app *fiber.App) {
 
 	v1 := api.Group("/v1")
 
-	v1.Get("/categories", controllers.Index)
-	v1.Get("/categories/:id", controllers.Show)
-	v1.Post("/categories", controllers.Create)
-	v1.Put("/categories/:id", controllers.Update)
-	v1.Delete("/categories/:id", controllers.Delete)
+	// v1.Get("/categories", controllers.Index)
+	// v1.Get("/categories/:id", controllers.Show)
+	// v1.Post("/categories", controllers.Create)
+	// v1.Put("/categories/:id", controllers.Update)
+	// v1.Delete("/categories/:id", controllers.Delete)
 
 	admin := v1.Group("/admin")
 
@@ -57,6 +57,7 @@ func InitRoutes(app *fiber.App) {
 	// Post
 	admin.Get("/posts", admin_mod.AdminPostIndex)
 	admin.Post("/posts", admin_mod.AdminPostCreate)
+	admin.Get("/posts/:id", admin_mod.AdminPostShow)
 
 	// User
 	admin.Post("/users", controllers.CreateUser)

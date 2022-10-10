@@ -21,6 +21,8 @@ type ErrorUser struct {
 	Value       string
 }
 
+var validate = validator.New()
+
 func ValidateUser(user models.User) []*ErrorUser {
 	var errors []*ErrorUser
 	err := validate.Struct(user)

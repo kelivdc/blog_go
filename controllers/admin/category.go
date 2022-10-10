@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"blog/controllers"
 	"blog/database"
 	"blog/models"
 	"fmt"
@@ -49,10 +48,10 @@ func AdminCategoryCreate(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON("error")
 	}
 
-	errors := controllers.ValidateStruct(*category)
-	if errors != nil {
-		return c.Status(400).JSON(errors)
-	}
+	// errors := controllers.ValidateStruct(*category)
+	// if errors != nil {
+	// 	return c.Status(400).JSON(errors)
+	// }
 
 	database.Database.Db.Create(&category)
 	return c.Status(fiber.StatusOK).JSON(category)
@@ -87,10 +86,10 @@ func AdminCategoryUpdate(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON("error")
 	}
 
-	errors := controllers.ValidateStruct(*updateCategory)
-	if errors != nil {
-		return c.Status(400).JSON(errors)
-	}
+	// errors := controllers.ValidateStruct(*updateCategory)
+	// if errors != nil {
+	// 	return c.Status(400).JSON(errors)
+	// }
 
 	category.Name = updateCategory.Name
 	category.Slug = updateCategory.Slug
